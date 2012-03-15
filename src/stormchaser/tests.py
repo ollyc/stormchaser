@@ -43,7 +43,8 @@ class TestChangeTracker(object):
 
     class A(object):
         __storm_table__ = 'testob'
-        clt = ChangeTracker(ChangeHistory.configure("history"))
+        changehistory = ChangeHistory.configure("history")
+        clt = ChangeTracker(changehistory)
         id = Int(primary=1)
         textval = Unicode(validator=clt)
         intval = Int(validator=clt)
@@ -125,4 +126,18 @@ class TestChangeTracker(object):
         b.textval = u'foo'
         changes = self.store.find(history)
         assert_equal(changes[0].cuser, u'Fred')
+
+
+    def test_changes_for_returns_change_history(self):
+        a = self.store.add(self.A())
+        b = self.store.add(self.A())
+        a.id = 1
+        a.textval = u'one'
+        a.textval = u'two'
+        b.id = 2
+        b.textval = u'ein'
+        b.textval = u'zwei'
+
+        assert_equal([c.new_value for c in a.changehistory.changes_for(a)], [u'one', u'two'])
+        assert_equal([c.new_value for c in a.changehistory.changes_for(b)], [u'ein', u'zwei'])
 

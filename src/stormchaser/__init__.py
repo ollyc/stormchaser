@@ -100,6 +100,15 @@ class ChangeHistory(object):
 
         return ChangeHistory
 
+    @classmethod
+    def changes_for(cls, ob):
+        """
+        Return a :class:`storm.store.ResultSet` of ChangeHistory objects for the given object
+        """
+        store = Store.of(ob)
+        return store.find(cls, ref_class = cls._getclassref(ob), ref_pk=cls._getpk(ob))
+
+
 class ChangeTracker(object):
     """\
     Hook into changes to storm objects via the Storm validation API
