@@ -3,7 +3,7 @@ Track changes to storm objects via Storm's validator API
 """
 
 from datetime import datetime
-from storm.locals import Store, RawStr, Int, DateTime, JSON
+from storm.locals import Store, Unicode, Int, DateTime, JSON
 from storm.info import get_obj_info
 
 
@@ -13,7 +13,7 @@ def getclassname(ob):
     """
 
     cls = ob.__class__
-    return '%s.%s' % (cls.__module__, cls.__name__)
+    return u'%s.%s' % (cls.__module__, cls.__name__)
 
 def getpk(ob):
     """\
@@ -35,14 +35,14 @@ class ChangeHistory(object):
     id = Int(primary=1)
 
     #: A string reference to the changed class
-    ref_class = RawStr()
+    ref_class = Unicode()
 
     #: A reference to the primary key of the changed object. JSON is used so
     #: that compound primary keys can be handled
     ref_pk = JSON()
 
     #: The name of the changed attribute
-    ref_attr = RawStr()
+    ref_attr = Unicode()
 
     #: The new value
     new_value = JSON()
@@ -51,7 +51,7 @@ class ChangeHistory(object):
     ctime = DateTime()
 
     #: User associated with the log entry
-    cuser = None
+    cuser = Int()
 
     # Callable that takes the changed object and returns a string reference to the class
     _getclassref = None
@@ -65,7 +65,7 @@ class ChangeHistory(object):
     def __init__(self, ob, attr, value):
         self.ref_class = self._getclassref(ob)
         self.ref_pk = self._getpk(ob)
-        self.ref_attr = attr
+        self.ref_attr = unicode(attr)
         self.new_value = value
         self.ctime = datetime.now()
         self.cuser = self._getuser()
