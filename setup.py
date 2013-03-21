@@ -25,7 +25,7 @@ setup(
     name='stormchaser',
     version=read('VERSION.txt').strip().encode('ASCII'),
     description='Track change history for Storm model objects',
-    long_description=read('README.txt') + "\n\n" + read("CHANGELOG.txt"),
+    long_description=read('README.rst') + "\n\n" + read("CHANGELOG.rst"),
     author='Oliver Cope',
     license = 'BSD',
     zip_safe = False,
