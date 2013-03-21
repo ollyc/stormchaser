@@ -73,6 +73,14 @@ class ChangeHistory(object):
         self.ctime = datetime.now()
         self.cuser = self._getuser()
 
+    def __repr__(self):
+        return '<%s for %s.%s #%r %r @ %s>' % (self.__class__.__name__,
+                                               self.ref_class,
+                                               self.ref_attr,
+                                               self.ref_pk,
+                                               self.new_value,
+                                               self.ctime)
+
     @classmethod
     def configure(cls, table, getuser=None, usertype=Int,
                   getclassref=getclassname,
