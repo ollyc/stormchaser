@@ -11,15 +11,17 @@ def getclassname(ob):
     """\
     Return the fully qualified class name of instance ``ob``
     """
-
     cls = ob.__class__
     return u'%s.%s' % (cls.__module__, cls.__name__)
+
 
 def getpk(ob):
     """\
     Return a tuple of primary key values for ``ob``
     """
+
     return tuple(n.get() for n in get_obj_info(ob).primary_vars)
+
 
 class ChangeHistory(object):
     """\
@@ -53,7 +55,8 @@ class ChangeHistory(object):
     #: User associated with the log entry
     cuser = Int()
 
-    # Callable that takes the changed object and returns a string reference to the class
+    # Callable that takes the changed object and returns a string reference to
+    # the class
     _getclassref = None
 
     # Callable that takes the changed object and returns its primary key values
@@ -75,14 +78,16 @@ class ChangeHistory(object):
                   getclassref=getclassname,
                   getpk=getpk, **kwargs):
         """\
-        Return a subclass of ChangeHistory configured to store data in ``table``.
+        Return a subclass of ChangeHistory configured to store data in
+        ``table``.
 
         :param table: name of the table to use for storing the changelog data
-        :param getuser: (optional) a function returning a user identifier for each change.
-                        The function must take no arguments and return a JSON
-                        serializable object.
+        :param getuser: (optional) a function returning a user identifier for
+                        each change. The function must take no arguments and
+                        return a JSON serializable object.
         :param usertype: The column type for the user identifier, which must
-                         agree with the return value of getuser. Defaults to ``Int``.
+                         agree with the return value of getuser. Defaults to
+                         ``Int``.
         :param kwargs: Any other keyword arguments will be added as class
                        attributes to the generated class
         """
@@ -103,10 +108,12 @@ class ChangeHistory(object):
     @classmethod
     def changes_for(cls, ob):
         """
-        Return a :class:`storm.store.ResultSet` of ChangeHistory objects for the given object
+        Return a :class:`storm.store.ResultSet` of ChangeHistory objects for
+        the given object
         """
-        store = Store.of(ob)
-        return store.find(cls, ref_class = cls._getclassref(ob), ref_pk=cls._getpk(ob))
+        return Store.of(ob).find(cls,
+                                 ref_class=cls._getclassref(ob),
+                                 ref_pk=cls._getpk(ob))
 
 
 class ChangeTracker(object):
@@ -126,4 +133,3 @@ class ChangeTracker(object):
         if store:
             store.add(self.change_cls(ob, attr, value))
         return value
-
